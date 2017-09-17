@@ -1,0 +1,7 @@
+discordrb
+doc
+.bundle
+vendor
+.yardoc
+bin
+config.yml
