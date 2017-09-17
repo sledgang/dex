@@ -9,7 +9,7 @@ module Dex
   extend Lenny
 
   Discordrb::LOGGER.info 'Loading docs..'
-  YARD.parse('vendor/bundle/ruby/*/bundler/gems/discordrb-*/**/*.rb')
+  YARD.parse("vendor/bundle/ruby/#{RUBY_VERSION[0..-2]}0/bundler/gems/discordrb-*/**/*.rb")
   YARD::Registry.save(false, 'discordrb')
 
   # Recall docs into chat
