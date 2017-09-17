@@ -29,7 +29,7 @@ module Dex
       event.channel.send_embed(reply.content, reply.embed)
     rescue Docs::LookupFail => ex
       Discordrb::LOGGER.info("Error: #{ex.message}")
-      event.respond "#{ex.message} #{lenny}"
+      event.send_temporary_message("#{ex.message} #{lenny}", 10)
     end
   end
 
