@@ -12,8 +12,14 @@ module Dex
   YARD.parse("vendor/bundle/ruby/#{RUBY_VERSION[0..-2]}0/bundler/gems/discordrb-*/**/*.rb")
   YARD::Registry.save(false, 'discordrb')
 
+  B1NZY = Discordrb::Commands::SimpleRateLimiter.new
+  B1NZY.bucket(:docs, limit: 3, time_span: 30)
+  B1NZY.bucket(:info, limit: 1, time_span: 60)
+
   # Recall docs into chat
   bot.message(start_with: /\?doc|dex\.doc\s/, in: config.channels) do |event|
+    next if B1NZY.rate_limited?(:docs, event.channel.id)
+
     path = event.message.content.split(' ')[1]
     Discordrb::LOGGER.info("[#{event.channel.name} | #{event.user.distinct}] Lookup: #{path}")
 
@@ -34,6 +40,8 @@ module Dex
   end
 
   bot.message(content: 'dex.info') do |event|
+    next if B1NZY.rate_limited?(:info, event.channel.id)
+
     event.channel.send_embed("**Usage:** `?doc Class`, `?doc Class#method`") do |embed|
       embed.description = <<~DOC
       [Source code](https://github.com/y32/dex)
