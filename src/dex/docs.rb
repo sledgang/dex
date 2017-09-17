@@ -22,12 +22,15 @@ module Docs
     # For building permalinks
     RUBYDOC = 'http://www.rubydoc.info/github/meew0/discordrb'
 
+    # Does this really need explaining?
+    RUBY_TACO = 'https://cdn.discordapp.com/emojis/315242245274075157.png'
+
     # Utility method that yields a template embed
     def new_embed
       Discordrb::Webhooks::Embed.new(
         color: 0xff0000,
-        title: 'View on RubyDoc',
-        url: permalink
+        url: permalink,
+        author: { name: '[View on RubyDoc]', icon_url: RUBY_TACO }
       ).tap { |e| yield e if block_given? }
     end
 
