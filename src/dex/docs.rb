@@ -51,7 +51,7 @@ module Docs
       @path = path.start_with?('Discordrb::') ? path : "Discordrb::#{path}"
       @object = lookup
 
-      raise LookupFail, "Docs for `#{path}` not found"
+      raise LookupFail, "Docs for `#{path}` not found" unless @object
     end
 
     # Load YARD into this thread's cache
