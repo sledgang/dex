@@ -41,6 +41,10 @@ module Docs
       ).tap { |e| yield e if block_given? }
     end
 
+    def embed
+      new_embed
+    end
+
     # Builds a permalink to RubyDoc
     def permalink
       path.gsub!('::', '%2F')
@@ -97,7 +101,7 @@ module Docs
         content << "```rb\n#{sig}\n```"
       end
 
-      Reply.new(content, new_embed)
+      Reply.new(content, embed)
     end
 
     # Pulls this object from YARD's cache
