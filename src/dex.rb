@@ -33,6 +33,20 @@ module Dex
     end
   end
 
+  bot.message(content: 'dex.info') do |event|
+    event.channel.send_embed("**Usage:** `?doc Class`, `?doc Class#method`") do |embed|
+      embed.description = <<~DOC
+      [**Source code**](https://github.com/y32/dex)
+      [**discordrb**](https://github.com/meew0/discordrb)
+      DOC
+
+      owner = bot.user(config.owner)
+      embed.url = 'https://github.com/z64'
+      embed.author = { name: owner.distinct, icon_url: owner.avatar_url }
+      embed.thumbnail = { url: Docs::Embed::RUBY_TACO }
+    end
+  end
+
   bot.run(:async)
   binding.pry if ARGV[0] == 'pry'
   bot.sync
