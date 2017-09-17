@@ -44,6 +44,10 @@ module Dex
 
     event.channel.send_embed("**Usage:** `?doc Class`, `?doc Class#method`") do |embed|
       embed.description = <<~DOC
+      **Commit:**
+      ```
+      #{`git log -n 1 --oneline`}
+      ```
       [Source code](https://github.com/y32/dex)
       [discordrb](https://github.com/meew0/discordrb)
       DOC
