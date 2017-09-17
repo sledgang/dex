@@ -13,6 +13,9 @@ module Docs
   class LookupFail < Exception
   end
 
+  # A container for a reply back to discord
+  Reply = Struct.new(:content, :embed)
+
   # Module for helpers for building embeds
   # TODO: Also GitHub permalinks?
   module Embed
@@ -25,7 +28,7 @@ module Docs
         color: 0xff0000,
         title: 'View on RubyDoc',
         url: permalink
-      ).tap { |e| yield e }
+      ).tap { |e| yield e if block_given? }
     end
 
     # Builds a permalink to RubyDoc
@@ -57,6 +60,34 @@ module Docs
     # Load YARD into this thread's cache
     private def load
       YARD::Registry.load!('discordrb')
+    end
+
+    # Renders this lookup into a Discord-ready `Reply`
+    # Classes should override this method to render content in a custom way
+    def render
+      # TODO: Less spaghetti handling of this. I can't seem to pull the docstrings
+      # from attr_* and the likes...
+      docs = if docstring.empty?
+               if reader? && writer?
+                 'attr_accessor'
+               elsif reader? && !writer?
+                 'attr_reader'
+               elsif writer? && !reader?
+                 'attr_writer'
+               end
+             else
+               docstring
+             end
+      content = <<~DOC
+      **#{path}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}]`
+      #{docstring.empty? ? 'No documentation available.' : docstring}
+      DOC
+
+      if sig = signature
+        content << "```rb\n#{sig}\n```"
+      end
+
+      Reply.new(content, new_embed)
     end
 
     # Pulls this object from YARD's cache

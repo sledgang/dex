@@ -23,12 +23,10 @@ module Dex
       object = lookup(path)
 
       next event.respond(lenny) unless object
-      Discordrb::LOGGER.info("Found: #{object.inspect}")
+      Discordrb::LOGGER.info("Found: #{object.class} @ #{path}")
 
-      event.respond <<~DOC
-      **#{path}**
-      #{object.docstring}
-      DOC
+      reply = object.render
+      event.channel.send_embed(reply.content, reply.embed)
     rescue Docs::LookupFail => ex
       Discordrb::LOGGER.info("Error: #{ex.message}")
       event.respond "#{ex.message} #{lenny}"
