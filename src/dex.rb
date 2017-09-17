@@ -13,8 +13,8 @@ module Dex
   YARD::Registry.save(false, 'discordrb')
 
   # Recall docs into chat
-  bot.message(start_with: 'dex.doc', in: config.channels) do |event|
-    path = event.message.content[7..-1].strip
+  bot.message(start_with: /\?doc|dex\.doc\s/, in: config.channels) do |event|
+    path = event.message.content.split(' ')[1]
     Discordrb::LOGGER.info("[#{event.channel.name} | #{event.user.distinct}] Lookup: #{path}")
 
     next event.respond(lenny) if path.empty?
