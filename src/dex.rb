@@ -14,29 +14,25 @@ module Dex
 
   # Recall docs into chat
   bot.message(start_with: 'dex.doc', in: config.channels) do |event|
-    YARD::Registry.load!('discordrb')
-
     path = event.message.content[7..-1].strip
-    object = YARD::Registry.at(
-      path.start_with?('Discordrb::') ? path : "Discordrb::#{path}"
-    )
+    Discordrb::LOGGER.info("[#{event.channel.name} | #{event.user.distinct}] Lookup: #{path}")
 
-    next event.respond(lenny) unless object
+    next event.respond(lenny) if path.empty?
 
-    embed = if path.include?('#')
-              embed_method(object)
-            else
-              embed_class(object)
-            end
+    begin
+      object = lookup(path)
 
-    path = object.path.gsub('%2F', '::')
+      next event.respond(lenny) unless object
+      Discordrb::LOGGER.info("Found: #{object.inspect}")
 
-    content = <<~DOC
-    **#{path}**
-    #{object.docstring.gsub("\n", ' ')}
-    DOC
-
-    event.channel.send_embed(content, embed)
+      event.respond <<~DOC
+      **#{path}**
+      #{object.docstring}
+      DOC
+    rescue Docs::LookupFail => ex
+      Discordrb::LOGGER.info("Error: #{ex.message}")
+      event.respond "#{ex.message} #{lenny}"
+    end
   end
 
   bot.run(:async)
