@@ -1,10 +1,12 @@
 require 'pry'
 require_relative 'dex/bot'
+require_relative 'dex/reactions'
 require_relative 'dex/docs'
 require_relative 'dex/lenny'
 
 module Dex
   extend Bot
+  extend Reactions
   extend Docs
   extend Lenny
 
