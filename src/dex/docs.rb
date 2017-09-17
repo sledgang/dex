@@ -27,10 +27,17 @@ module Docs
 
     # Utility method that yields a template embed
     def new_embed
+      definitions = files.map do |f|
+        path, line = f[0].split('/')[8..-1].join('/'), f[1]
+        "`#{path}` `L#{line}`"
+      end.join("\n")
+
       Discordrb::Webhooks::Embed.new(
         color: 0xff0000,
         url: permalink,
-        author: { name: '[View on RubyDoc]', icon_url: RUBY_TACO }
+        title: '[View on RubyDoc]',
+        description: definitions,
+        footer: { text: "discordrb v#{Discordrb::VERSION}", icon_url: RUBY_TACO }
       ).tap { |e| yield e if block_given? }
     end
 
