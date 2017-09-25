@@ -9,3 +9,7 @@ end
 task :pry do
   sh 'bundle exec ruby src/dex.rb pry'
 end
+
+task :build do
+  sh 'docker build -t dex .'
+end
