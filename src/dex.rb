@@ -23,7 +23,7 @@ module Dex
     path = event.message.content.split(' ')[1]
     Discordrb::LOGGER.info("[#{event.channel.name} | #{event.user.distinct}] Lookup: #{path}")
 
-    next event.respond(lenny) if path.empty?
+    next event.respond(lenny) unless path
 
     begin
       object = lookup(path)
@@ -58,6 +58,8 @@ module Dex
       embed.thumbnail = { url: Docs::Embed::RUBY_TACO }
     end
   end
+
+  at_exit { bot.stop }
 
   bot.run(:async)
   binding.pry if ARGV[0] == 'pry'

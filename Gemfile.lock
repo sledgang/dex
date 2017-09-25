@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/meew0/discordrb.git
-  revision: 1de6923bd5e7001d5250c1bd8a78ff36be7d247e
+  revision: 5a83900b41e40d63a7df6161cae7bc2d5d528e19
   branch: master
   specs:
     discordrb (3.2.1)
@@ -29,17 +29,15 @@ GEM
     netrc (0.11.0)
     opus-ruby (1.0.1)
       ffi
-    pry (0.10.4)
+    pry (0.11.0)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
-      slop (~> 3.4)
     rbnacl (3.4.0)
       ffi
     rest-client (2.0.2)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    slop (3.6.0)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.4)
@@ -58,4 +56,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.15.4
+   1.15.3
