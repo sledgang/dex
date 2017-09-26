@@ -16,6 +16,9 @@ module Dex
   B1NZY.bucket(:docs, limit: 3, time_span: 30)
   B1NZY.bucket(:info, limit: 1, time_span: 60)
 
+  # Maximum method source length to post to chat
+  MAX_LINES = 20
+
   # Recall docs into chat
   bot.message(start_with: /\?doc|dex\.doc\s/, in: config.channels) do |event|
     next if B1NZY.rate_limited?(:docs, event.channel.id)
@@ -39,10 +42,41 @@ module Dex
     end
   end
 
+  # Print method source
+  bot.message(start_with: /(\?|dex\.)s(au|our)ce/, in: config.channels) do |event|
+    next if B1NZY.rate_limited?(:docs, event.channel.id)
+
+    path = event.message.content.split(' ')[1]
+    Discordrb::LOGGER.info("[#{event.channel.name} | #{event.user.distinct}] Source Lookup: #{path}")
+
+    next event.respond(lenny) unless path
+
+    begin
+      object = lookup(path)
+
+      next event.respond(lenny) unless object
+      Discordrb::LOGGER.info("Found: #{object.class} @ #{path}")
+
+      next event.respond("Can only print source of methods.. #{lenny}") unless object.is_a?(Docs::InstanceMethod)
+
+      source = object.source
+      embed = { title: '[View on Rubydoc]', url: object.permalink, color: 0xff0000 }
+
+      lines = source.count("\n")
+      next event.channel.send_embed("Method source too long #{lenny} `(#{lines} / #{MAX_LINES})`", embed) if lines > MAX_LINES
+
+      event.channel.send_embed("```rb\n#{source}\n```", embed)
+    rescue Docs::LookupFail => ex
+      Discordrb::LOGGER.info("Error: #{ex.message}")
+      event.send_temporary_message("#{ex.message} #{lenny}", 10)
+    end
+  end
+
+  # General bot info
   bot.message(content: 'dex.info') do |event|
     next if B1NZY.rate_limited?(:info, event.channel.id)
 
-    event.channel.send_embed("**Usage:** `?doc Class`, `?doc Class#method`") do |embed|
+    event.channel.send_embed("**Usage:** `?doc Class`, `?doc Class#method`, `?source Class#method`") do |embed|
       embed.description = <<~DOC
       **Commit:**
       ```
