@@ -20,7 +20,7 @@ module Docs
   # TODO: Also GitHub permalinks?
   module Embed
     # For building permalinks
-    RUBYDOC = 'http://www.rubydoc.info/github/meew0/discordrb'
+    RUBYDOC = 'http://www.rubydoc.info/github/meew0/discordrb/master'
 
     # Does this really need explaining?
     RUBY_TACO = 'https://cdn.discordapp.com/emojis/315242245274075157.png'
