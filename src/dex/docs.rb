@@ -48,6 +48,7 @@ module Docs
     # Builds a permalink to RubyDoc
     def permalink
       path.gsub!('::', '%2F')
+      path.gsub!('?', '%3F')
       path.gsub!('#', ':')
 
       "#{RUBYDOC}/#{path}"
