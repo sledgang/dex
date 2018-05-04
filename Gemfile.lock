@@ -1,51 +1,53 @@
 GIT
   remote: https://github.com/meew0/discordrb.git
-  revision: 5a83900b41e40d63a7df6161cae7bc2d5d528e19
+  revision: a7baf7b47c052c0414d84134197002bc81ca24ca
   branch: master
   specs:
     discordrb (3.2.1)
       discordrb-webhooks (~> 3.2.0.1)
       opus-ruby
       rbnacl (~> 3.4.0)
-      rest-client
+      rest-client (>= 2.1.0.rc1)
       websocket-client-simple (>= 0.3.0)
     discordrb-webhooks (3.2.0.1)
-      rest-client
+      rest-client (>= 2.1.0.rc1)
 
 GEM
   remote: https://rubygems.org/
   specs:
     coderay (1.1.2)
-    domain_name (0.5.20170404)
+    domain_name (0.5.20180417)
       unf (>= 0.0.5, < 1.0.0)
     event_emitter (0.2.6)
-    ffi (1.9.18)
+    ffi (1.9.23)
+    http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
-    method_source (0.8.2)
+    method_source (0.9.0)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     netrc (0.11.0)
     opus-ruby (1.0.1)
       ffi
-    pry (0.11.0)
+    pry (0.11.3)
       coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
+      method_source (~> 0.9.0)
     rbnacl (3.4.0)
       ffi
-    rest-client (2.0.2)
+    rest-client (2.1.0.rc1)
+      http-accept (>= 1.7.0, < 2.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.7.4)
-    websocket (1.2.4)
+    unf_ext (0.0.7.5)
+    websocket (1.2.5)
     websocket-client-simple (0.3.0)
       event_emitter
       websocket
-    yard (0.9.9)
+    yard (0.9.12)
 
 PLATFORMS
   ruby
@@ -56,4 +58,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.15.3
+   1.16.1
