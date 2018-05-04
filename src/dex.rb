@@ -60,12 +60,11 @@ module Dex
       next event.respond("Can only print source of methods.. #{lenny}") unless object.is_a?(Docs::InstanceMethod)
 
       source = object.source
-      embed = { title: '[View on Rubydoc]', url: object.permalink, color: 0xff0000 }
 
       lines = source.count("\n")
-      next event.channel.send_embed("Method source too long #{lenny} `(#{lines} / #{MAX_LINES})`", embed) if lines > MAX_LINES
+      next event.channel.send_embed("Method source too long #{lenny} `(#{lines} / #{MAX_LINES})`", object.embed) if lines > MAX_LINES
 
-      event.channel.send_embed("```rb\n#{source}\n```", embed)
+      event.channel.send_embed("```rb\n#{source}\n```", object.embed)
     rescue Docs::LookupFail => ex
       Discordrb::LOGGER.info("Error: #{ex.message}")
       event.send_temporary_message("#{ex.message} #{lenny}", 10)
@@ -83,7 +82,7 @@ module Dex
       #{`git log -n 1 --oneline`}
       ```
       [Source code](https://github.com/y32/dex)
-      [discordrb](https://github.com/meew0/discordrb)
+      [discordrb](#{Docs::Embed::GITHUB_URL})
       DOC
 
       owner = bot.user(config.owner)

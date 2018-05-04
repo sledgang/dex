@@ -17,7 +17,6 @@ module Docs
   Reply = Struct.new(:content, :embed)
 
   # Module for helpers for building embeds
-  # TODO: Also GitHub permalinks?
   module Embed
     # For building permalinks
     RUBYDOC = 'http://www.rubydoc.info/github/meew0/discordrb/master'
@@ -25,11 +24,17 @@ module Docs
     # Does this really need explaining?
     RUBY_TACO = 'https://cdn.discordapp.com/emojis/315242245274075157.png'
 
+    # Git Version of the library
+    GIT_VERSION = Bundler.load.specs['discordrb'].first.git_version.strip
+
+    # Base link for the library source
+    GITHUB_URL = 'https://github.com/meew0/discordrb'
+
     # Utility method that yields a template embed
     def new_embed
       definitions = files.map do |f|
         path, line = f[0].split('/')[8..-1].join('/'), f[1]
-        "`#{path}` `L#{line}`"
+        "[`#{path}#L#{line}`](#{GITHUB_URL}/tree/#{GIT_VERSION}/lib/#{path}#L#{line})"
       end.join("\n")
 
       Discordrb::Webhooks::Embed.new(
@@ -37,7 +42,7 @@ module Docs
         url: permalink,
         title: '[View on RubyDoc]',
         description: definitions,
-        footer: { text: "discordrb v#{Discordrb::VERSION}", icon_url: RUBY_TACO }
+        footer: { text: "discordrb v#{Discordrb::VERSION}@#{GIT_VERSION}", icon_url: RUBY_TACO }
       ).tap { |e| yield e if block_given? }
     end
 
