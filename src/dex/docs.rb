@@ -107,7 +107,7 @@ module Docs
                docstring
              end
       content = <<~DOC
-      **#{path}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
+      **#{path}#{(rtn = tags.find{ |tag| tag.tag_name == 'return' }) ? " ➜ (#{rtn.types.join(', ')})" :  nil}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
       #{docstring.empty? ? 'No documentation available.' : docstring}
       DOC
 
