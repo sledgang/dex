@@ -70,11 +70,19 @@ module Docs
     # The cached docs object
     attr_reader :object
 
+    # The alias of the object if it exists
+    attr_reader :alias
+
     def initialize(path)
       @path = path.start_with?('Discordrb::') ? path : "Discordrb::#{path}"
       @object = lookup
 
-      raise LookupFail, "Docs for `#{path}` not found" unless @object
+      raise LookupFail, "Docs for `#{path}` not found" unless object
+
+      if object.is_alias?
+        @alias = object
+        @object = YARD::Registry.at("#{object.namespace.path}#{object.sep}#{object.namespace.aliases[object]}")
+      end
     end
 
     # Load YARD into this thread's cache
@@ -99,7 +107,7 @@ module Docs
                docstring
              end
       content = <<~DOC
-      **#{path}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}]`
+      **#{path}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
       #{docstring.empty? ? 'No documentation available.' : docstring}
       DOC
 
