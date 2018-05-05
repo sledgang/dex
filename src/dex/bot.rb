@@ -1,15 +1,18 @@
+# frozen_string_literal: true
+
 require 'discordrb'
 require 'yaml'
 require 'ostruct'
 
+# Discord Bot
 module Bot
   def config
     @config ||= OpenStruct.new YAML.load_file('config.yml')
 
-    raise 'invalid config' unless [
-      :token,
-      :channels,
-      :owner
+    raise 'invalid config' unless %i[
+      token
+      channels
+      owner
     ].map { |e| @config.respond_to?(e) }.all?
 
     @config
