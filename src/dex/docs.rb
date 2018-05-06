@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yard'
 
 # Classes that control the rendering of YARD content into Discord messages
@@ -10,7 +12,7 @@ module Docs
   end
 
   # Exception to raise when we can't find a YARD object
-  class LookupFail < Exception
+  class LookupFail < RuntimeError
   end
 
   # A container for a reply back to discord
@@ -33,7 +35,8 @@ module Docs
     # Utility method that yields a template embed
     def new_embed
       definitions = files.map do |f|
-        path, line = f[0].split('/')[8..-1].join('/'), f[1]
+        path = f[0].split('/')[8..-1].join('/')
+        line = f[1]
         "[`#{path}#L#{line}`](#{GITHUB_URL}/tree/#{GIT_VERSION}/lib/#{path}#L#{line})"
       end.join("\n")
 
@@ -52,11 +55,11 @@ module Docs
 
     # Builds a permalink to RubyDoc
     def permalink
-      path.gsub!('::', '%2F')
-      path.gsub!('?', '%3F')
-      path.gsub!('#', ':')
+      link = path.tr('::', '%2F')
+      link.tr!('?', '%3F')
+      link.tr!('#', ':')
 
-      "#{RUBYDOC}/#{path}"
+      "#{RUBYDOC}/#{link}"
     end
   end
 
@@ -79,10 +82,9 @@ module Docs
 
       raise LookupFail, "Docs for `#{path}` not found" unless object
 
-      if object.is_alias?
-        @alias = object
-        @object = YARD::Registry.at("#{object.namespace.path}#{object.sep}#{object.namespace.aliases[object]}")
-      end
+      return unless object.is_alias?
+      @alias = object
+      @object = YARD::Registry.at("#{object.namespace.path}#{object.sep}#{object.namespace.aliases[object]}")
     end
 
     # Load YARD into this thread's cache
@@ -107,13 +109,10 @@ module Docs
                docstring
              end
       content = <<~DOC
-      **#{path}#{(rtn = tags.find{ |tag| tag.tag_name == 'return' }) ? " ➜ (#{rtn.types.join(', ')})" :  nil}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
-      #{docstring.empty? ? 'No documentation available.' : docstring}
+        **#{path}#{(rtn = tags.find { |tag| tag.tag_name == 'return' }) ? " ➜ (#{rtn.types.join(', ')})" : nil}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
+        #{docstring.empty? ? 'No documentation available.' : docstring}
+        #{"```rb\n#{signature}\n```" if signature}
       DOC
-
-      if sig = signature
-        content << "```rb\n#{sig}\n```"
-      end
 
       Reply.new(content, embed)
     end
@@ -126,7 +125,7 @@ module Docs
 
     # Returns the docs object's docstring, but removes YARD's wrapping
     def docstring
-      object.docstring.gsub("\n", ' ')
+      object.docstring.tr("\n", ' ')
     end
 
     # Delegate missing methods onto the cached docs object

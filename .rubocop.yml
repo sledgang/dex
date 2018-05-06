@@ -1,0 +1,31 @@
+# Oldest version still supported
+AllCops:
+  TargetRubyVersion: 2.3.7
+
+# No Metrics
+Metrics/LineLength:
+  Enabled: False
+
+Metrics/PerceivedComplexity:
+  Enabled: False
+
+Metrics/MethodLength:
+  Enabled: False
+
+Metrics/CyclomaticComplexity:
+  Enabled: False
+
+Metrics/AbcSize:
+  Enabled: False
+
+# Pry
+Lint/Debugger:
+  Enabled: False
+
+# ( ͠° ͜ʖ °)
+Style/AsciiComments:
+  Enabled: False
+
+# Method Missing
+Style/MethodMissing:
+  Enabled: False

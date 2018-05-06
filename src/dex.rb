@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'pry'
 require_relative 'dex/bot'
 require_relative 'dex/docs'
 require_relative 'dex/lenny'
 
+# Master module
 module Dex
   extend Bot
   extend Docs
@@ -75,14 +78,14 @@ module Dex
   bot.message(content: 'dex.info') do |event|
     next if B1NZY.rate_limited?(:info, event.channel.id)
 
-    event.channel.send_embed("**Usage:** `?doc Class`, `?doc Class#method`, `?source Class#method`") do |embed|
+    event.channel.send_embed('**Usage:** `?doc Class`, `?doc Class#method`, `?source Class#method`') do |embed|
       embed.description = <<~DOC
-      **Commit:**
-      ```
-      #{`git log -n 1 --oneline`}
-      ```
-      [Source code](https://github.com/y32/dex)
-      [discordrb](#{Docs::Embed::GITHUB_URL})
+        **Commit:**
+        ```
+        #{`git log -n 1 --oneline`}
+        ```
+        [Source code](https://github.com/y32/dex)
+        [discordrb](#{Docs::Embed::GITHUB_URL})
       DOC
 
       owner = bot.user(config.owner)
