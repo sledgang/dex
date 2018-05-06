@@ -80,6 +80,11 @@ module Docs
       @path = path.start_with?('Discordrb::') ? path : "Discordrb::#{path}"
       @object = lookup
 
+      if object.nil? && /(?<namespace>\S+)(?<separator>[.#])(?<name>\S+)/i =~ @path
+        parent = YARD::Registry.at(namespace)
+        @object = parent.meths.find { |method| method.name.to_s == name && method.sep == separator }
+      end
+
       raise LookupFail, "Docs for `#{path}` not found" unless object
 
       return unless object.is_alias?
