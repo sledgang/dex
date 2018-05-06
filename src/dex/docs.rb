@@ -5,10 +5,15 @@ require 'yard'
 # Classes that control the rendering of YARD content into Discord messages
 module Docs
   # Parses a path and returns the processed rendering object
-  # TODO: probably regex
   def lookup(path)
-    return InstanceMethod.new(path) if path.include?('#')
-    Object.new(path)
+    case path
+    when /\S+#\S+/i
+      InstanceMethod.new(path)
+    when /\S+\.\S+/i
+      ClassMethod.new(path)
+    else
+      Object.new(path)
+    end
   end
 
   # Exception to raise when we can't find a YARD object
@@ -73,9 +78,6 @@ module Docs
     # The cached docs object
     attr_reader :object
 
-    # The alias of the object if it exists
-    attr_reader :alias
-
     def initialize(path)
       @path = path.start_with?('Discordrb::') ? path : "Discordrb::#{path}"
       @object = lookup
@@ -86,10 +88,6 @@ module Docs
       end
 
       raise LookupFail, "Docs for `#{path}` not found" unless object
-
-      return unless object.is_alias?
-      @alias = object
-      @object = YARD::Registry.at("#{object.namespace.path}#{object.sep}#{object.namespace.aliases[object]}")
     end
 
     # Load YARD into this thread's cache
@@ -144,13 +142,27 @@ module Docs
     include Lookup
   end
 
-  # Describes rendering for instance methods
-  class InstanceMethod
+  # Describes rendering for methods
+  class Method
     include Lookup
+
+    # The alias of the object if it exists
+    attr_reader :alias
+
+    def initialize(path)
+      super(path)
+
+      return unless object.is_alias?
+      @alias = object
+      @object = YARD::Registry.at("#{object.namespace.path}#{object.sep}#{object.namespace.aliases[object]}")
+    end
+  end
+
+  # Describes rendering for instance methods
+  class InstanceMethod < Method
   end
 
   # Describes rendering for class methods (not sure if needed)
-  class ClassMethod
-    include Lookup
+  class ClassMethod < Method
   end
 end
