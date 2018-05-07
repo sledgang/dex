@@ -34,6 +34,19 @@ dex.doc Server#kick
 ?doc API::Channel.resolve
 ```
 
+### `dex.source` (alias: `dex.sauce`, `?source`, `?sauce`)
+
+Displays the source code of methods.
+
+```
+dex.source Channel#message
+?source Server#kick
+?sauce Message#delete
+```
+
+Method source code over 20 lines in length won't be displayed, only a link will
+be given.
+
 ### `dex.info`
 
 Shows bot info.
