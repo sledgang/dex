@@ -5,20 +5,24 @@ require "yaml"
 require "ostruct"
 
 # Discord Bot
-module Bot
-  def config
-    @config ||= OpenStruct.new YAML.load_file("config.yml")
+module Dex
+  module Bot
+    extend self
 
-    raise "invalid config" unless %i[
-      token
-      channels
-      owner
-    ].map { |e| @config.respond_to?(e) }.all?
+    def config
+      @config ||= OpenStruct.new YAML.load_file("config.yml")
 
-    @config
-  end
+      raise "invalid config" unless %i[
+        token
+        channels
+        owner
+      ].map { |e| @config.respond_to?(e) }.all?
 
-  def bot
-    @bot ||= Discordrb::Bot.new(token: config.token)
+      @config
+    end
+
+    def bot
+      @bot ||= Discordrb::Bot.new(token: config.token)
+    end
   end
 end
