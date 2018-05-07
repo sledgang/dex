@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'pry'
-require_relative 'dex/bot'
-require_relative 'dex/docs'
-require_relative 'dex/lenny'
+require "pry"
+require_relative "dex/bot"
+require_relative "dex/docs"
+require_relative "dex/lenny"
 
 # Master module
 module Dex
@@ -11,9 +11,9 @@ module Dex
   extend Docs
   extend Lenny
 
-  Discordrb::LOGGER.info 'Loading docs..'
+  Discordrb::LOGGER.info "Loading docs.."
   YARD.parse("vendor/bundle/ruby/#{RUBY_VERSION[0..-2]}0/bundler/gems/discordrb-*/**/*.rb")
-  YARD::Registry.save(false, 'discordrb')
+  YARD::Registry.save(false, "discordrb")
 
   B1NZY = Discordrb::Commands::SimpleRateLimiter.new
   B1NZY.bucket(:docs, limit: 3, time_span: 30)
@@ -26,7 +26,7 @@ module Dex
   bot.message(start_with: /\?doc|dex\.doc\s/, in: config.channels) do |event|
     next if B1NZY.rate_limited?(:docs, event.channel.id)
 
-    path = event.message.content.split(' ')[1]
+    path = event.message.content.split(" ")[1]
     Discordrb::LOGGER.info("[#{event.channel.name} | #{event.user.distinct}] Lookup: #{path}")
 
     next event.respond(lenny) unless path
@@ -49,7 +49,7 @@ module Dex
   bot.message(start_with: /(\?|dex\.)s(au|our)ce/, in: config.channels) do |event|
     next if B1NZY.rate_limited?(:docs, event.channel.id)
 
-    path = event.message.content.split(' ')[1]
+    path = event.message.content.split(" ")[1]
     Discordrb::LOGGER.info("[#{event.channel.name} | #{event.user.distinct}] Source Lookup: #{path}")
 
     next event.respond(lenny) unless path
@@ -75,10 +75,10 @@ module Dex
   end
 
   # General bot info
-  bot.message(content: 'dex.info') do |event|
+  bot.message(content: "dex.info") do |event|
     next if B1NZY.rate_limited?(:info, event.channel.id)
 
-    event.channel.send_embed('**Usage:** `?doc Class`, `?doc Class#method`, `?source Class#method`') do |embed|
+    event.channel.send_embed("**Usage:** `?doc Class`, `?doc Class#method`, `?source Class#method`") do |embed|
       embed.description = <<~DOC
         **Commit:**
         ```
@@ -89,15 +89,15 @@ module Dex
       DOC
 
       owner = bot.user(config.owner)
-      embed.url = 'https://github.com/z64'
-      embed.author = { name: owner.distinct, icon_url: owner.avatar_url }
-      embed.thumbnail = { url: Docs::Embed::RUBY_TACO }
+      embed.url = "https://github.com/z64"
+      embed.author = {name: owner.distinct, icon_url: owner.avatar_url}
+      embed.thumbnail = {url: Docs::Embed::RUBY_TACO}
     end
   end
 
   at_exit { bot.stop }
 
   bot.run(:async)
-  binding.pry if ARGV[0] == 'pry'
+  binding.pry if ARGV[0] == "pry"
   bot.sync
 end

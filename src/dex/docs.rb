@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'yard'
+require "yard"
 
 # Classes that control the rendering of YARD content into Discord messages
 module Docs
@@ -26,21 +26,21 @@ module Docs
   # Module for helpers for building embeds
   module Embed
     # For building permalinks
-    RUBYDOC = 'http://www.rubydoc.info/github/meew0/discordrb/master'
+    RUBYDOC = "http://www.rubydoc.info/github/meew0/discordrb/master"
 
     # Does this really need explaining?
-    RUBY_TACO = 'https://cdn.discordapp.com/emojis/315242245274075157.png'
+    RUBY_TACO = "https://cdn.discordapp.com/emojis/315242245274075157.png"
 
     # Git Version of the library
-    GIT_VERSION = Bundler.load.specs['discordrb'].first.git_version.strip
+    GIT_VERSION = Bundler.load.specs["discordrb"].first.git_version.strip
 
     # Base link for the library source
-    GITHUB_URL = 'https://github.com/meew0/discordrb'
+    GITHUB_URL = "https://github.com/meew0/discordrb"
 
     # Utility method that yields a template embed
     def new_embed
       definitions = files.map do |f|
-        path = f[0].split('/')[8..-1].join('/')
+        path = f[0].split("/")[8..-1].join("/")
         line = f[1]
         "[`#{path}#L#{line}`](#{GITHUB_URL}/tree/#{GIT_VERSION}/lib/#{path}#L#{line})"
       end.join("\n")
@@ -48,9 +48,9 @@ module Docs
       Discordrb::Webhooks::Embed.new(
         color: 0xff0000,
         url: permalink,
-        title: '[View on RubyDoc]',
+        title: "[View on RubyDoc]",
         description: definitions,
-        footer: { text: "discordrb v#{Discordrb::VERSION}@#{GIT_VERSION}", icon_url: RUBY_TACO }
+        footer: {text: "discordrb v#{Discordrb::VERSION}@#{GIT_VERSION}", icon_url: RUBY_TACO},
       ).tap { |e| yield e if block_given? }
     end
 
@@ -60,9 +60,9 @@ module Docs
 
     # Builds a permalink to RubyDoc
     def permalink
-      link = path.tr('::', '%2F')
-      link.tr!('?', '%3F')
-      link.tr!('#', ':')
+      link = path.tr("::", "%2F")
+      link.tr!("?", "%3F")
+      link.tr!("#", ":")
 
       "#{RUBYDOC}/#{link}"
     end
@@ -79,7 +79,7 @@ module Docs
     attr_reader :object
 
     def initialize(path)
-      @path = path.start_with?('Discordrb::') ? path : "Discordrb::#{path}"
+      @path = path.start_with?("Discordrb::") ? path : "Discordrb::#{path}"
       @object = lookup
 
       if object.nil? && /(?<namespace>\S+)(?<separator>[.#])(?<name>\S+)/i =~ @path
@@ -92,7 +92,7 @@ module Docs
 
     # Load YARD into this thread's cache
     private def load
-      YARD::Registry.load!('discordrb')
+      YARD::Registry.load!("discordrb")
     end
 
     # Renders this lookup into a Discord-ready `Reply`
@@ -102,18 +102,18 @@ module Docs
       # from attr_* and the likes...
       docs = if docstring.empty?
                if reader? && writer?
-                 'attr_accessor'
+                 "attr_accessor"
                elsif reader? && !writer?
-                 'attr_reader'
+                 "attr_reader"
                elsif writer? && !reader?
-                 'attr_writer'
+                 "attr_writer"
                end
              else
                docstring
              end
       content = <<~DOC
-        **#{path}#{(rtn = tags.find { |tag| tag.tag_name == 'return' }) ? " ➜ (#{rtn.types.join(', ')})" : nil}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
-        #{docstring.empty? ? 'No documentation available.' : docstring}
+        **#{path}#{(rtn = tags.find { |tag| tag.tag_name == "return" }) ? " ➜ (#{rtn.types.join(", ")})" : nil}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
+        #{docstring.empty? ? "No documentation available." : docstring}
         #{"```rb\n#{signature}\n```" if signature}
       DOC
 
@@ -128,7 +128,7 @@ module Docs
 
     # Returns the docs object's docstring, but removes YARD's wrapping
     def docstring
-      object.docstring.tr("\n", ' ')
+      object.docstring.tr("\n", " ")
     end
 
     # Delegate missing methods onto the cached docs object
