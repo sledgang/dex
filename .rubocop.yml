@@ -1,6 +1,5 @@
-# Oldest version still supported
 AllCops:
-  TargetRubyVersion: 2.3.7
+  TargetRubyVersion: 2.5.1
 
 # No Metrics
 Metrics/LineLength:
