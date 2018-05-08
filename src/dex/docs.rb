@@ -10,9 +10,9 @@ module Dex
     # Parses a path and returns the processed rendering object
     def lookup(path)
       case path
-      when /\S+#\S+/i
+      when /[A-Z]\S+#\S+/i
         InstanceMethod.new(path)
-      when /\S+\.\S+/i
+      when /[A-Z]\S+\.\S+/i
         ClassMethod.new(path)
       else
         Object.new(path)
