@@ -87,7 +87,7 @@ module Dex
 
         if object.nil? && /(?<namespace>\S+)(?<separator>[.#])(?<name>\S+)/i =~ @path
           parent = YARD::Registry.at(namespace)
-          @object = parent.meths.find { |method| method.name.to_s == name && method.sep == separator }
+          @object = parent.meths.find { |method| method.name.to_s == name && method.sep == separator } if parent
         end
 
         raise LookupFail, "Docs for `#{path}` not found" unless object
