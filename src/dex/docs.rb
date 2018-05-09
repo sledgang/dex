@@ -63,7 +63,7 @@ module Dex
 
       # Builds a permalink to RubyDoc
       def permalink
-        link = path.tr("::", "%2F")
+        link = object.path.gsub("::", "%2F")
         link.tr!("?", "%3F")
         link.tr!("#", ":")
 
