@@ -29,7 +29,7 @@ module Dex
     # Module for helpers for building embeds
     module Embed
       # For building permalinks
-      RUBYDOC = "http://www.rubydoc.info/github/meew0/discordrb/master"
+      RUBYDOC = "https://meew0.github.io/discordrb/master"
 
       # Does this really need explaining?
       RUBY_TACO = "https://cdn.discordapp.com/emojis/315242245274075157.png"
