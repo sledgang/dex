@@ -1,0 +1,7 @@
+name: dex
+version: 0.1.0
+
+dependencies:
+  discordcr:
+    github: meew0/discordcr
+    branch: master

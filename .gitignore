@@ -5,3 +5,4 @@ vendor
 .yardoc
 bin
 config.yml
+lib
