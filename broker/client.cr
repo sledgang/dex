@@ -36,7 +36,7 @@ module Dex
     loop do
       message = channel.receive
       json = message.to_json
-      peer.write_bytes(json.size, IO::ByteFormat::SystemEndian)
+      peer.write_bytes(json.bytesize, IO::ByteFormat::SystemEndian)
       peer.print(json)
     end
   rescue ex : Errno
