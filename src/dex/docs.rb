@@ -69,7 +69,7 @@ module Dex
         link = object.path.gsub("::", "/")
         link.tr!("?", "%3F")
 
-        "#{GITDOC}/#{link}"
+        "#{GITDOC}/#{link}#{link_suffix}"
       end
 
       # Builds a permalink to RubyDoc
@@ -154,6 +154,10 @@ module Dex
     # Describes rendering for objects and modules
     class Object
       include Lookup
+
+      def link_suffix
+        nil
+      end
     end
 
     # Describes rendering for methods
@@ -174,10 +178,16 @@ module Dex
 
     # Describes rendering for instance methods
     class InstanceMethod < Method
+      def link_suffix
+        "-instance_method"
+      end
     end
 
     # Describes rendering for class methods (not sure if needed)
     class ClassMethod < Method
+      def link_suffix
+        "-class_method"
+      end
     end
   end
 end
