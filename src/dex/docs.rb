@@ -29,10 +29,10 @@ module Dex
     # Module for helpers for building embeds
     module Embed
       # For building links to RubyDoc
-      RUBYDOC = "http://www.rubydoc.info/github/meew0/discordrb/master"
+      RUBYDOC_URL = "http://www.rubydoc.info/github/meew0/discordrb/master"
 
       # For building links to Git Docs
-      GITDOC = "https://meew0.github.io/discordrb/master"
+      GITHUB_PAGES_URL = "https://meew0.github.io/discordrb/master"
 
       # Does this really need explaining?
       RUBY_TACO = "https://cdn.discordapp.com/emojis/315242245274075157.png"
@@ -53,7 +53,7 @@ module Dex
 
         Discordrb::Webhooks::Embed.new(
           color: 0xff0000,
-          url: git_link,
+          url: github_pages_url,
           title: "[View on Git Docs]",
           description: definitions,
           footer: {text: "discordrb v#{Discordrb::VERSION}@#{GIT_VERSION}", icon_url: RUBY_TACO},
@@ -65,11 +65,11 @@ module Dex
       end
 
       # Builds a link to Git Docs
-      def git_link
+      def github_pages_url
         link = object.path.gsub("::", "/")
         link.tr!("?", "%3F")
 
-        "#{GITDOC}/#{link}#{link_suffix}"
+        "#{GITHUB_PAGES_URL}/#{link}#{link_suffix}"
       end
 
       # Builds a permalink to RubyDoc
@@ -78,7 +78,7 @@ module Dex
         link.tr!("?", "%3F")
         link.tr!("#", ":")
 
-        "#{RUBYDOC}/#{link}"
+        "#{RUBYDOC_URL}/#{link}"
       end
     end
 
