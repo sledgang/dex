@@ -28,8 +28,11 @@ module Dex
 
     # Module for helpers for building embeds
     module Embed
-      # For building permalinks
-      RUBYDOC = "https://meew0.github.io/discordrb/master"
+      # For building links to RubyDoc
+      RUBYDOC_URL = "http://www.rubydoc.info/github/meew0/discordrb/master"
+
+      # For building links to Git Docs
+      GITHUB_PAGES_URL = "https://meew0.github.io/discordrb/master"
 
       # Does this really need explaining?
       RUBY_TACO = "https://cdn.discordapp.com/emojis/315242245274075157.png"
@@ -50,8 +53,8 @@ module Dex
 
         Discordrb::Webhooks::Embed.new(
           color: 0xff0000,
-          url: permalink,
-          title: "[View on RubyDoc]",
+          url: github_pages_url,
+          title: "[View on Git Docs]",
           description: definitions,
           footer: {text: "discordrb v#{Discordrb::VERSION}@#{GIT_VERSION}", icon_url: RUBY_TACO},
         ).tap { |e| yield e if block_given? }
@@ -61,13 +64,21 @@ module Dex
         new_embed
       end
 
+      # Builds a link to Git Docs
+      def github_pages_url
+        link = object.path.gsub("::", "/")
+        link.tr!("?", "%3F")
+
+        "#{GITHUB_PAGES_URL}/#{link}#{link_suffix}"
+      end
+
       # Builds a permalink to RubyDoc
       def permalink
         link = object.path.gsub("::", "%2F")
         link.tr!("?", "%3F")
         link.tr!("#", ":")
 
-        "#{RUBYDOC}/#{link}"
+        "#{RUBYDOC_URL}/#{link}"
       end
     end
 
@@ -143,6 +154,10 @@ module Dex
     # Describes rendering for objects and modules
     class Object
       include Lookup
+
+      def link_suffix
+        nil
+      end
     end
 
     # Describes rendering for methods
@@ -163,10 +178,16 @@ module Dex
 
     # Describes rendering for instance methods
     class InstanceMethod < Method
+      def link_suffix
+        "-instance_method"
+      end
     end
 
     # Describes rendering for class methods (not sure if needed)
     class ClassMethod < Method
+      def link_suffix
+        "-class_method"
+      end
     end
   end
 end
