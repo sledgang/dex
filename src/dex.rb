@@ -74,7 +74,7 @@ module Dex
       Bot.send_message(message.channel_id, reply.content, reply.embed.to_hash)
     rescue Docs::LookupFail => ex
       Discordrb::LOGGER.info("Error: #{ex.message}")
-      Bot.send_message(message.channel_id, "#{ex.message} #{Lenny.get}", 10)
+      Bot.send_message(message.channel_id, "#{ex.message} #{Lenny.get}", nil, 10)
     end
   end
 
@@ -98,7 +98,7 @@ module Dex
       Bot.send_message(message.channel_id, "```rb\n#{source}\n```", object.embed.to_hash)
     rescue Docs::LookupFail => ex
       Discordrb::LOGGER.info("Error: #{ex.message}")
-      Bot.send_message(message.channel_id, "#{ex.message} #{Lenny.get}", 10)
+      Bot.send_message(message.channel_id, "#{ex.message} #{Lenny.get}", nil, 10)
     end
   end
 
