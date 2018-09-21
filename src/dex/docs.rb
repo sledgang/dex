@@ -112,24 +112,56 @@ module Dex
       # Renders this lookup into a Discord-ready `Reply`
       # Classes should override this method to render content in a custom way
       def render
-        # TODO: Less spaghetti handling of this. I can't seem to pull the docstrings
-        # from attr_* and the likes...
-        docs = if docstring.empty?
-                 if reader? && writer?
-                   "attr_accessor"
-                 elsif reader? && !writer?
-                   "attr_reader"
-                 elsif writer? && !reader?
-                   "attr_writer"
-                 end
-               else
-                 docstring
-               end
-        content = <<~DOC
-          **#{path}#{(rtn = tags.find { |tag| tag.tag_name == "return" }) ? " ➜ (#{rtn.types.join(", ")})" : nil}** `[#{type}, #{visibility}#{docstring.empty? ? ", #{docs}" : nil}#{@alias ? ", alias: #{name}" : nil}]`
-          #{docstring.empty? ? "No documentation available." : docstring}
-          #{"```rb\n#{signature}\n```" if signature}
-        DOC
+        content = MessageBuilder.build do |msg|
+          return_tag = tags.find do |tag|
+            tag.tag_name == "return"
+          end
+
+          attr_kind = if reader? && writer?
+                        "attr_accessor"
+                      elsif reader? && !writer?
+                        "attr_reader"
+                      elsif writer? && !reader?
+                        "attr_writer"
+                      end
+
+          msg.bold do
+            msg.write path
+            if return_tag
+              types_signature = return_tag.types.join(", ")
+              msg.write(" \u{279c} (#{types_signature})")
+            end
+          end
+
+          msg.space
+
+          msg.inline_code_block do
+            msg.write("[#{type}, #{visibility}")
+            msg.write(", #{attr_kind}") if attr_kind
+            msg.write(", alias: #{name}") if @alias
+            msg.write("]")
+          end
+
+          msg.newline
+
+          if docstring.empty?
+            if return_tag
+              msg.write(return_tag.text.capitalize)
+            else
+              msg.italics do
+                msg.write("No documentation available..")
+              end
+            end
+          else
+            msg.write(docstring)
+          end
+
+          if signature
+            msg.code_block do
+              msg.write(signature)
+            end
+          end
+        end
 
         Reply.new(content, embed)
       end

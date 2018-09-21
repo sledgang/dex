@@ -2,6 +2,7 @@
 
 require "pry"
 require_relative "dex/bot"
+require_relative "dex/message_builder"
 require_relative "dex/docs"
 require_relative "dex/lenny"
 

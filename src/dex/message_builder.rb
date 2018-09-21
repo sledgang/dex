@@ -6,7 +6,7 @@ module Dex
 
     def self.build(&block)
       instance = new
-      instance.instance_eval(&block)
+      yield instance
       instance.buffer.string
     end
 
@@ -14,37 +14,41 @@ module Dex
       @buffer = StringIO.new
     end
 
-    def write(str)
-      @buffer << str
+    def write(string)
+      @buffer << string
+      string
     end
 
     def newline
-      @buffer << "\n"
+      write("\n")
+    end
+
+    def space
+      write(" ")
     end
 
     def italics
-      @buffer << "*"
+      write("*")
       yield
-      @buffer << "*"
+      write("*")
     end
 
     def bold
-      @buffer << "**"
+      write("**")
       yield
-      @buffer << "**"
+      write("**")
     end
 
     def inline_code_block(inline = true, lang = "rb")
-      @buffer << "`"
+      write("`")
       yield
-      @buffer << "`"
+      write("`")
     end
 
     def code_block(lang = "rb")
-      backticks = "```"
-      @buffer << newline << backticks << lang << newline
+      write("\n```#{lang}\n")
       yield
-      @buffer << newline << backticks << newline
+      write("\n```\n")
     end
   end
 end
