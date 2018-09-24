@@ -39,7 +39,7 @@ module Dex
       write("**")
     end
 
-    def inline_code_block(inline = true, lang = "rb")
+    def inline_code_block
       write("`")
       yield
       write("`")
