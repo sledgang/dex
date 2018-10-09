@@ -187,6 +187,15 @@ module Dex
     class Object
       include Lookup
 
+      def reader?
+        false
+      end
+
+
+      def writer?
+        false
+      end
+
       def link_suffix
         nil
       end
