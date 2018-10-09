@@ -191,7 +191,6 @@ module Dex
         false
       end
 
-
       def writer?
         false
       end
